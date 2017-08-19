@@ -1,2 +1,68 @@
-// Main LESS
+// --------- ------ [ Main LESS ] -------- ----------
+@import "mixins.less";
+// variables
+@height-panel-container: 500px;
+@height-new-note: 50px;
+@icon-list: add, cancel, delete, edit;
 
+// screen sizes
+@screen-680: ~"only screen and (max-width : 680px)";
+
+// Grid system
+.grid-container {
+    width: 100%;
+    //max-width: 1200px;
+    box-sizing: border-box;
+  }
+  
+.row::before,
+.row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+  
+.create-columns(6); 
+
+[class*= 'col-'] {
+    @media @screen-680 {
+        width: 100%;
+    }
+}
+// end grid system
+@rule: {height: 45px; width: 45px;}; 
+.create-img-class({.container-square(40px);}, @icon-list);
+
+.panel-work- {
+    &notes {
+        background-color: palevioletred;
+        height: @height-panel-container;
+    }
+    
+    &note-details {
+        background-color: palegreen;
+        height: @height-panel-container;
+
+        @media @screen-680 {
+            display: none;
+        }
+    }
+
+    &new-note {
+        background-color: grey;
+        height: @height-new-note;
+    }
+
+    &list-note {
+        background-color: #5F8B69;
+        height: (@height-panel-container - @height-new-note);
+    }
+}
+
+footer {
+    @height_container: 100px;
+    background-color: black;
+    color: whitesmoke;
+    .container-size(@height_container, 100%);
+    .content-center(@height_container);
+}

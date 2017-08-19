@@ -1,0 +1,37 @@
+.container-size(@h, @w) {
+    height: @h;
+    width: @w;
+}
+
+.container-square(@size) {
+    .container-size(@size, @size);
+}
+
+.margin-none(){
+    margin: 0;
+}
+
+.content-center(@line-heigth) {
+    text-align: center;
+    line-height: @line-heigth;
+}
+
+.create-columns(@num-columns, @i: 1) when (@i =< @num-columns) {
+    .col-@{i} {
+      float: left;
+      min-height: 1px;
+      width: (@i * 100% / @num-columns);
+    }
+    .create-columns(@num-columns, (@i+1)); 
+}
+
+// Generate class img-* from an array
+.create-img-class(@rules, @array-list, @size: length(@array-list)) when (@size > 0) {
+  .create-img-class(@rules, @array-list, @size - 1);
+  @value: extract(@array-list, @size);
+  .img-@{value} {    
+    @rules();
+    background-image: url("../img/@{value}.png");
+    background-size: contain;
+  }
+}
