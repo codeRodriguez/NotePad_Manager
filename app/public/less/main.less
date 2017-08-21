@@ -50,13 +50,26 @@
 
     &new-note {
         background-color: grey;
+        box-sizing: border-box;
+        .centered-vertical(@height-new-note);
         height: @height-new-note;
+        padding: 4px;
+
+        h3{
+            display: inline-block;
+            font-size: 30px;
+            margin: 0;
+        }
     }
 
     &list-note {
         background-color: #5F8B69;
         height: (@height-panel-container - @height-new-note);
     }
+}
+
+.float-right {
+    float: right;
 }
 
 footer {

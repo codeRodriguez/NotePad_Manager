@@ -9,13 +9,19 @@
     <link rel="stylesheet/less" type="text/css" href="less/main.less" />
     <!-- Here: include any Less plugin scripts, any required browser shims and optionally set less = any options  -->
     <script src="js/less.min.js"></script>
+
+    <!-- Here include JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Here include main.js -->
+    <script src="js/main.js"></script>
 </head>
 <body>
     <div class="grid-container">
         <div class="row">
             <div class="col-2 panel-work-notes">
                 <div class="panel-work-new-note">
-                    <div class="img-cancel"></div>
+                    <h3>New Note</h3>
+                    <div id="btn_new_note" class="img-add float-right"></div>
                 </div> 
                 <div class="panel-work-list-note"></div> 
             </div>
@@ -26,5 +32,11 @@
     <footer>        
         <p>Home Work Manager</p>
     </footer>
+
+    <script>
+        $('document').ready(function(){
+            Util.start();
+        });
+    </script>
 </body>
 </html>
