@@ -37,6 +37,7 @@
     &notes {
         background-color: palevioletred;
         height: @height-panel-container;
+        overflow: hidden;
     }
     
     &note-details {
@@ -53,7 +54,7 @@
         box-sizing: border-box;
         .centered-vertical(@height-new-note);
         height: @height-new-note;
-        padding: 4px;
+        padding: 4px 8px;
 
         h3{
             display: inline-block;
@@ -64,7 +65,22 @@
 
     &list-note {
         background-color: #5F8B69;
+        box-sizing: border-box;
         height: (@height-panel-container - @height-new-note);
+        padding: 4px 8px;
+
+        .card-note {                      
+            background-color: whitesmoke;
+            box-sizing: border-box;
+            height: 100px;
+            margin-bottom: 4px;
+            padding: 4px;
+            width: 100%;
+
+            &> * { //all element into .card-note
+                margin: 0;
+            }
+        }
     }
 }
 
