@@ -1,8 +1,11 @@
 // --------- ------ [ Main LESS ] -------- ----------
 @import "mixins.less";
+@import url('https://fonts.googleapis.com/css?family=Roboto');
 // variables
+@font-roboto: 'Roboto', sans-serif;
 @height-panel-container: 500px;
 @height-new-note: 50px;
+@paddin-container: 4px;
 @icon-list: add, cancel, delete, edit;
 
 // screen sizes
@@ -33,6 +36,8 @@
 @rule: {height: 45px; width: 45px;}; 
 .create-img-class({.container-square(40px);}, @icon-list);
 
+body { font-family: @font-roboto }
+
 .panel-work- {
     &notes {
         background-color: palevioletred;
@@ -46,6 +51,33 @@
 
         @media @screen-680 {
             display: none;
+        }
+
+        .panel-tools-details {
+            background-color: #969696;
+            box-sizing: border-box;
+            .centered-vertical(@height-new-note);
+            height: @height-new-note;
+            padding: 4px 8px;
+
+            h3{
+                display: inline-block;
+                font-size: 30px;
+                margin: 0;
+            }
+        }
+
+        .form-details {            
+            background-color: tomato;
+            margin: auto;
+            overflow: hidden;
+            padding: @paddin-container 0px;
+            width: 90%;
+
+            &> :not([id*=date_]) {                
+                box-sizing: border-box;
+                width: 100%;              
+            }
         }
     }
 
@@ -67,18 +99,32 @@
         background-color: #5F8B69;
         box-sizing: border-box;
         height: (@height-panel-container - @height-new-note);
+        overflow-y: scroll;
         padding: 4px 8px;
 
         .card-note {                      
             background-color: whitesmoke;
             box-sizing: border-box;
+            cursor: pointer;
             height: 100px;
             margin-bottom: 4px;
             padding: 4px;
+            position: relative;
+            transition: 0.2s;
             width: 100%;
+
+            &:hover {
+                background-color: burlywood;
+            }
 
             &> * { //all element into .card-note
                 margin: 0;
+            }
+
+            .date {
+                position: absolute;
+                right: @paddin-container;
+                bottom: @paddin-container;
             }
         }
     }

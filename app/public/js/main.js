@@ -1,6 +1,8 @@
 // Main JS File
 
 var Util = {
+    NoteListArray: [],
+    // Object View ------------------------------------------------------------------
     View: {
         /**
          * @param {array} note_list
@@ -17,27 +19,52 @@ var Util = {
         },
 
         /**
+         * @param {array} note
+         */
+        updatePanelNoteDetails: function(note) {
+            var keys = Object.keys(note);
+            var parent = $('.panel-work-note-details');
+            for (var i = 0; i < keys.length; i++) {
+                parent.find('#'+keys[i]).val(note[keys[i]]);
+            }
+            /*
+            var parent = $('.panel-work-note-details');
+            parent.find('#tittle').val(note['tittle']);
+            parent.find('#date_begin').val(note['date_begin']);
+            */
+            
+        },
+
+        /**
          * Returns content html <div class="card-note"></div>
          * @param {array} note
          * @returns {string} 
          */
         makeCard: function(note) {            
-            return '<div class="card-note">' +
+            return '<div id="'+note['id']+'" class="card-note">' +
             '<h3 class="tittle">'+note['tittle']+'</h3>' +
             '<p class="detail">'+note['details']+'</p>' +
-            '<p class="date">'+note['date_begin']+'</p>' +
+            '<p class="date">'+Util.getDateFormat(note['date_begin'])+'</p>' +
             '</div>';
         }
     },
-
+    // Object Events ------------------------------------------------------------------
     Events: {   
         onClickNewNote: function() {
             $('#btn_new_note').click(function() {
                 alert('onClick');
             });
+        },
+
+        onClickCardNote: function() {
+            $('.card-note').click(function() {
+                //alert('tittle:'+ Util.getNoteById($(this).attr('id'))['tittle']);
+                var note = Util.getNoteById($(this).attr('id'));
+                Util.View.updatePanelNoteDetails(note);
+            }); 
         }
     },
-
+    // Object AjaxOject ---------------------------------------------------------------
     AjaxOject: {                
         /**
          * Returns a Object ajax
@@ -64,14 +91,35 @@ var Util = {
         }
     },
 
-    // Object Util's functions
+    // Object Util's functions ------------------------------------------------------
     start: function() {        
-        this.Events.onClickNewNote();
+        Util.Events.onClickNewNote();
         //testing ................
         //this.AjaxOject.request({test: 'msg enviado desde el cliente'}, 'json');         
         Util.AjaxOject.request({test: 'msg enviado desde el cliente'}, 'json')
         .done(function(data, textStatus, jqXHR){
-            Util.View.updatePanelNoteList(data);
-        });           
+            Util.NoteListArray = data;
+            Util.View.updatePanelNoteList(Util.NoteListArray);
+            Util.Events.onClickCardNote();
+        });                   
+    },
+
+    /**
+     * Returns false if not found else return json object
+     * @param {number} note_id
+     * @returns {boolean | object}
+     */
+    getNoteById: function(note_id) {
+        var arrayAux = Util.NoteListArray;
+        for (var key in arrayAux) {
+            if(arrayAux[key]['id'] == note_id) { return arrayAux[key]}
+        }
+        
+        return false
+    },
+
+    getDateFormat: function(date) {
+        var d = new Date(date);
+        return d.getDate()+'-'+(d.getMonth()+1)+'-'+d.getFullYear();
     }
 }
