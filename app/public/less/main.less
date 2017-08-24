@@ -6,7 +6,7 @@
 @height-panel-container: 500px;
 @height-new-note: 50px;
 @paddin-container: 4px;
-@icon-list: add, cancel, delete, edit;
+@icon-list: add, accept, cancel, delete, edit;
 
 // screen sizes
 @screen-680: ~"only screen and (max-width : 680px)";
@@ -33,10 +33,18 @@
     }
 }
 // end grid system
+
 @rule: {height: 45px; width: 45px;}; 
 .create-img-class({.container-square(40px);}, @icon-list);
 
 body { font-family: @font-roboto }
+
+.container-button {
+    width: 100%;
+    height: 40px;
+    margin-top: 10px;
+    position: relative;
+}
 
 .panel-work- {
     &notes {
@@ -46,7 +54,7 @@ body { font-family: @font-roboto }
     }
     
     &note-details {
-        background-color: palegreen;
+        background-color: #e8e8e8;
         height: @height-panel-container;
 
         @media @screen-680 {
@@ -68,13 +76,13 @@ body { font-family: @font-roboto }
         }
 
         .form-details {            
-            background-color: tomato;
+            //background-color: tomato;
             margin: auto;
             overflow: hidden;
             padding: @paddin-container 0px;
             width: 90%;
 
-            &> :not([id*=date_]) {                
+            & input:not([id*=date_]), & textarea {                
                 box-sizing: border-box;
                 width: 100%;              
             }
@@ -132,6 +140,13 @@ body { font-family: @font-roboto }
 
 .float-right {
     float: right;
+}
+
+.center {
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 footer {

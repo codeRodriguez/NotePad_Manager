@@ -5,6 +5,20 @@ var Util = {
     // Object View ------------------------------------------------------------------
     View: {
         /**
+         * @param {string} element
+         */
+        disabled: function(element) {
+            $(element).css("display", "none");
+        },
+
+        /**
+         * @param {string} element
+         */
+        enable: function(element) {
+            $(element).css("display", "block");
+        },
+
+        /**
          * @param {array} note_list
          */
         updatePanelNoteList: function(note_list) {
@@ -32,9 +46,9 @@ var Util = {
             parent.find('#tittle').val(note['tittle']);
             parent.find('#date_begin').val(note['date_begin']);
             */
-            
+            Util.View.disabled('#buttons_confirm_edit');
         },
-
+        
         /**
          * Returns content html <div class="card-note"></div>
          * @param {array} note
@@ -46,6 +60,25 @@ var Util = {
             '<p class="detail">'+note['details']+'</p>' +
             '<p class="date">'+Util.getDateFormat(note['date_begin'])+'</p>' +
             '</div>';
+        },
+
+        makeFormdetails: function() {
+            return '<div class="form-details">' +
+                'tittle' +
+                '<input id="tittle" type="text" placeholder="Tittle">' +
+                'Description' +
+                '<textarea id="details" cols="30" rows="10"></textarea>' +
+                'begin' +
+                '<input id="date_begin" type="date">' +
+                'end' +
+                '<input id="date_end" type="date">' +
+                '<div id="buttons_confirm_edit" class="container-button">' +
+                    '<div class="center">' +
+                        '<div id="btn_accept" class="img-accept"></div>' +
+                        '<div id="btn_cancel" class="img-cancel"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>'
         }
     },
     // Object Events ------------------------------------------------------------------
@@ -56,11 +89,29 @@ var Util = {
             });
         },
 
+        onClickEditNote: function() {
+            $('#btn_edit').click(function() {                
+                Util.View.enable('#buttons_confirm_edit');
+                Util.Events.onClickCancelEditOption();
+            });
+        },
+
+        onClickCancelEditOption: function() {
+            $('#btn_cancel').click(function() {
+                Util.View.disabled('#buttons-options-details');
+                Util.View.disabled('.form-details'); 
+            })
+        },
+
         onClickCardNote: function() {
             $('.card-note').click(function() {
-                //alert('tittle:'+ Util.getNoteById($(this).attr('id'))['tittle']);
+                //alert('tittle:'+ Util.getNoteById($(this).attr('id'))['tittle']);                
                 var note = Util.getNoteById($(this).attr('id'));
                 Util.View.updatePanelNoteDetails(note);
+
+                Util.View.enable('#buttons-options-details');
+                Util.View.enable('.form-details');
+                Util.View.disabled('#buttons_confirm_edit');
             }); 
         }
     },
@@ -101,6 +152,10 @@ var Util = {
             Util.NoteListArray = data;
             Util.View.updatePanelNoteList(Util.NoteListArray);
             Util.Events.onClickCardNote();
+            Util.View.disabled('#buttons-options-details');
+            $('.panel-work-note-details').append(Util.View.makeFormdetails());                  
+            Util.View.disabled('.form-details');  
+            Util.Events.onClickEditNote();
         });                   
     },
 

@@ -37,5 +37,13 @@
     @rules();
     background-image: url("../img/@{value}.png");
     background-size: contain;
+    float: right;
+    margin: 0 4px;
+    transition: 0.2s;
+
+    &:hover {
+        background-image: url("../img/@{value}-hover.png");
+        background-size: contain;
+    }
   }
 }
