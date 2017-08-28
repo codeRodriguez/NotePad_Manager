@@ -116,26 +116,50 @@ body { font-family: @font-roboto }
             cursor: pointer;
             height: 100px;
             margin-bottom: 4px;
-            padding: 4px;
-            position: relative;
+            //padding: 4px;
+            //position: relative;
             transition: 0.2s;
             width: 100%;
 
             &:hover {
                 background-color: burlywood;
             }
+            
+            .content {
+                position: relative;
+                height: 100%;
+                box-sizing: border-box;
+                overflow: hidden;
+                padding: 4px;
 
-            &> * { //all element into .card-note
-                margin: 0;
-            }
-
-            .date {
-                position: absolute;
-                right: @paddin-container;
-                bottom: @paddin-container;
-            }
+                &> * { //all element into .card-note
+                    margin: 0;
+                }
+    
+                .date {
+                    position: absolute;
+                    right: @paddin-container;
+                    bottom: @paddin-container;
+                }
+            }            
         }
     }
+}
+
+.is_done() {
+    width: 20px;
+    height: 100%;    
+    float: left;
+}
+
+.is-done-true {
+    .is_done();
+    background-color: greenyellow;
+}
+
+.is-done-false {
+    .is_done();
+    background-color: tomato;
 }
 
 .float-right {

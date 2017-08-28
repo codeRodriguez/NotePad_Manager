@@ -29,6 +29,7 @@ var Util = {
                 });
                 // Insert content at the end
                 $('.panel-work-list-note').append(appendCards);
+                Util.Events.onClickCheckIsDone();
             } else {console.log('ERROR: parameter not is array');}            
         },
 
@@ -54,11 +55,17 @@ var Util = {
          * @param {array} note
          * @returns {string} 
          */
-        makeCard: function(note) {            
+        makeCard: function(note) {    
+            var isDoneClass = 'is-done-'+note['is_done'];
+            var checked = note['is_done'] ? 'checked' : '';                     
+            
             return '<div id="'+note['id']+'" class="card-note">' +
+            '<div class="'+isDoneClass+'"><input type="checkbox" '+checked+'></div>' +
+            '<div class="content">' +
             '<h3 class="tittle">'+note['tittle']+'</h3>' +
             '<p class="detail">'+note['details']+'</p>' +
             '<p class="date">'+Util.getDateFormat(note['date_begin'])+'</p>' +
+            '</div>' +
             '</div>';
         },
 
@@ -104,15 +111,24 @@ var Util = {
         },
 
         onClickCardNote: function() {
-            $('.card-note').click(function() {
+            $('.card-note .content').click(function() {
                 //alert('tittle:'+ Util.getNoteById($(this).attr('id'))['tittle']);                
-                var note = Util.getNoteById($(this).attr('id'));
+                var note = Util.getNoteById($(this).closest('.card-note').attr('id'));
                 Util.View.updatePanelNoteDetails(note);
 
                 Util.View.enable('#buttons-options-details');
                 Util.View.enable('.form-details');
                 Util.View.disabled('#buttons_confirm_edit');
             }); 
+        },
+
+        onClickCheckIsDone: function() { // TO DO
+            $('.card-note input').click(function() {
+                //console.log($(this).closest("div").attr("class"));
+                var parentClassName = $(this).closest("div"); // get parent node
+                // Remove current class and add [is-done-true | is-done-false]
+                parentClassName.removeClass('is-done-'+!this.checked).addClass('is-done-'+this.checked);
+            });
         }
     },
     // Object AjaxOject ---------------------------------------------------------------
