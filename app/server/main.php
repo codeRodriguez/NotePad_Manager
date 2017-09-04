@@ -1,7 +1,9 @@
 <?php
+    include 'autoloader.php';
+    /*
     $notes_test = array( // notes for testing
         array(
-            'id' => 01, 
+            'id' => "1", 
             'tittle' => 'crear PHP', 
             'details' => 'crear un fichero PHP', 
             'date_begin' => '2017-08-29', 
@@ -35,10 +37,11 @@
             'date_begin' => '2017-09-03', 
             'date_end' => '2017-09-08',
             'is_done' => true),
-    );
+    ); */
 
     if(isset($_POST['test'])){
         header('Content-type: application/json; charset=utf-8');
-        echo json_encode($notes_test);
+        $carNoteTable = new CardNoteTable();
+        echo json_encode($carNoteTable->getAll());
         exit();
     }   
