@@ -122,12 +122,23 @@ var Util = {
             }); 
         },
 
-        onClickCheckIsDone: function() { // TO DO
-            $('.card-note input').click(function() {
+        onClickCheckIsDone: function() { // .......................... TO DO
+            $('.card-note').find('input').click(function() {
+                // get element ID from class '.card-note'
+                var cardNoteID = $(this).closest('.card-note').attr('id');                
                 //console.log($(this).closest("div").attr("class"));
                 var parentClassName = $(this).closest("div"); // get parent node
                 // Remove current class and add [is-done-true | is-done-false]
                 parentClassName.removeClass('is-done-'+!this.checked).addClass('is-done-'+this.checked);
+                
+                Util.AjaxOject.request({update_is_done: {id: cardNoteID, isDone: this.checked}}, 'json')
+                .done(function(data, textStatus, jqXHR) {
+                    //alert('Tarea actualizada a '+data);
+                    Util.update(data);
+                })
+                .fail(function(jqXHR, textStatus, errorThrow) {
+                    console.log("ERROR: "+ errorThrow);                              
+                });
             });
         }
     },
@@ -163,16 +174,28 @@ var Util = {
         Util.Events.onClickNewNote();
         //testing ................
         //this.AjaxOject.request({test: 'msg enviado desde el cliente'}, 'json');         
-        Util.AjaxOject.request({test: 'msg enviado desde el cliente'}, 'json')
+        Util.AjaxOject.request({updateList: 'msg enviado desde el cliente'}, 'json')
         .done(function(data, textStatus, jqXHR){
-            Util.NoteListArray = data;
-            Util.View.updatePanelNoteList(Util.NoteListArray);
-            Util.Events.onClickCardNote();
-            Util.View.disabled('#buttons-options-details');
-            $('.panel-work-note-details').append(Util.View.makeFormdetails());                  
-            Util.View.disabled('.form-details');  
-            Util.Events.onClickEditNote();
-        });                   
+            Util.update(data);
+        })
+        .fail(function(jqXHR, textStatus, errorThrow) {
+            console.log("ERROR: "+ errorThrow + ' - ' +textStatus);                              
+        });;                   
+    },
+
+    /**
+     * Update NoteListArray, Event and Views
+     * @param {Oject} data
+     */
+    update: function(data) {        
+        $(".panel-work-list-note").empty(); //Remove all child nodes
+        Util.NoteListArray = data; // Save data in NoteListArray[]
+        Util.View.updatePanelNoteList(Util.NoteListArray);
+        Util.Events.onClickCardNote();
+        Util.View.disabled('#buttons-options-details');
+        $('.panel-work-note-details').append(Util.View.makeFormdetails());                  
+        Util.View.disabled('.form-details');  
+        Util.Events.onClickEditNote();
     },
 
     /**

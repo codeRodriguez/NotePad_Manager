@@ -9,4 +9,9 @@ $t->insertCardNote('Reunion', 'reunion con los empleados', '2017-9-20', '2017-9-
 $t->insertCardNote('Prueba 2', 'prueba 2 de mis detalles', '2017-9-30', '2017-9-30');
 $t->insertCardNote('Proyecto', 'terminar proyecto', '2017-9-15', '2017-9-30');
 */
-echo json_encode($t->getAll());
+
+$t->updateIsDone(12, false);
+//$t->updateNoteCard(11, 'Titulo 11', 'Detalles 11', '2017-9-12', '2017-9-12');
+
+
+//echo json_encode($t->getAll());

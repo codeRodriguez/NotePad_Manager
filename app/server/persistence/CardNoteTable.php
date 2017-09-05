@@ -23,7 +23,7 @@ class CardNoteTable extends \ConnectionDB
             
             $this->connectDB();
             $this->conn->exec($sql);
-            $this->close();
+            $this->close(); // close connection DB
             
             //echo "table created successfully";
         } catch (\PDOException $e) {
@@ -51,11 +51,61 @@ class CardNoteTable extends \ConnectionDB
            $statement->bindParam(5, $is_done, PDO::PARAM_BOOL);
            $statement->execute();
            
-           $this->close();           
+           $this->close(); // close connection DB
            return true;
            
         } catch (\PDOException $e) {
             echo "ERROR - insertCardNote() ".$e->getMessage();
+            return false;
+        }
+    }
+    
+    /**
+     * 
+     * @param int id
+     * @param boolean $is_done
+     * @return boolean true if is update or false if is not update
+     */
+    public function updateIsDone($id, $is_done) {
+        try {
+            $this->connectDB();
+            
+            $sql = "UPDATE card_notes SET is_done = :isdone WHERE id = $id";         
+            $statement = $this->conn->prepare($sql);
+            $statement->bindParam(':isdone', $is_done);
+            $statement->execute();
+            
+            $this->close(); // close connection DB
+            return true;
+        } catch (PDOException $e) {
+            echo "ERROR - updateCardNote() ".$e->getMessage();
+            return false;
+        }
+    }
+    
+    /**
+     * @param int id
+     * @param string tittle, details, date_begin, date_end
+     */
+    public function updateNoteCard($id, $tittle, $details, $date_begin, $date_end) {
+        try {
+            $this->connectDB();
+            
+            $sql = "UPDATE card_notes SET tittle = :tittle, details = :details,
+                    date_begin = :dbegin, date_end = :dend  
+                    WHERE id = $id";
+            
+            $statement = $this->conn->prepare($sql);
+            $statement->bindParam(':tittle', $tittle);
+            $statement->bindParam(':details', $details);
+            $statement->bindParam(':dbegin', $date_begin);
+            $statement->bindParam(':dend', $date_end);
+            $statement->execute();
+            
+            $this->close(); // close connection DB
+            return true;
+        } catch (PDOException $e) {
+            echo "ERROR updateNoteCard() - ".$e->getMessage();
             return false;
         }
     }
@@ -81,7 +131,7 @@ class CardNoteTable extends \ConnectionDB
                 $result[] = $row;
             }
                         
-            $this->close();
+            $this->close(); // close connection DB
             return $result;
         } catch (PDOException $e) {
             echo "ERROR: ". $e->getMessage();
