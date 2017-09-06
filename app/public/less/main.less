@@ -1,10 +1,12 @@
 // --------- ------ [ Main LESS ] -------- ----------
+@import "modal.less"; 
 @import "mixins.less";
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 // variables
 @font-roboto: 'Roboto', sans-serif;
 @height-panel-container: 500px;
 @height-new-note: 50px;
+@height-footer: 100px;
 @paddin-container: 4px;
 @icon-list: add, accept, cancel, delete, edit;
 
@@ -37,7 +39,13 @@
 @rule: {height: 45px; width: 45px;}; 
 .create-img-class({.container-square(40px);}, @icon-list);
 
-body { font-family: @font-roboto }
+body { 
+    font-family: @font-roboto;
+    .bk-degree(#E6E6E6,#9B9B9B);
+    padding-bottom: @height-footer + 40; 
+    position: relative;   
+    
+}
 
 .container-button {
     width: 100%;
@@ -90,8 +98,9 @@ body { font-family: @font-roboto }
     }
 
     &new-note {
-        background-color: grey;
+        background-color: #837ca2;
         box-sizing: border-box;
+        color: #E3E3E3;
         .centered-vertical(@height-new-note);
         height: @height-new-note;
         padding: 4px 8px;
@@ -104,7 +113,7 @@ body { font-family: @font-roboto }
     }
 
     &list-note {
-        background-color: #5F8B69;
+        background-color: #696969;
         box-sizing: border-box;
         height: (@height-panel-container - @height-new-note);
         overflow-y: scroll;
@@ -146,6 +155,24 @@ body { font-family: @font-roboto }
     }
 }
 
+.form-new-note {
+
+    &> * {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+.tools-info-bar {
+    @h: 25px; // height
+    height: @h;
+    background-color: #837ca2;
+    .centered-vertical(@h);
+    padding: 4px 8px;
+
+    &> * {margin: 0};
+}
+
 .is_done() {
     width: 20px;
     height: 100%;    
@@ -174,9 +201,13 @@ body { font-family: @font-roboto }
 }
 
 footer {
-    @height_container: 100px;
+    @height_container: @height-footer;
     background-color: black;
+    bottom: 0;
     color: whitesmoke;
     .container-size(@height_container, 100%);
     .content-center(@height_container);
+    position: absolute;
+
+    &> * {margin: 0;}
 }

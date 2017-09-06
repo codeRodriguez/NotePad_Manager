@@ -69,16 +69,23 @@ var Util = {
             '</div>';
         },
 
+        makeForm: function() {
+            return 'Tittle' +
+            '<input id="tittle" type="text" placeholder="Tittle">' +
+            'Description' +
+            '<textarea id="details" cols="30" rows="10"></textarea>' +
+            '<div class="date-container">' +
+            'begin' +
+            '<input id="date_begin" type="date">' +
+            'end' +
+            '<input id="date_end" type="date">' +
+            '</div>';
+        },
+
         makeFormdetails: function() {
             return '<div class="form-details">' +
-                'tittle' +
-                '<input id="tittle" type="text" placeholder="Tittle">' +
-                'Description' +
-                '<textarea id="details" cols="30" rows="10"></textarea>' +
-                'begin' +
-                '<input id="date_begin" type="date">' +
-                'end' +
-                '<input id="date_end" type="date">' +
+                Util.View.makeForm() +
+                
                 '<div id="buttons_confirm_edit" class="container-button">' +
                     '<div class="center">' +
                         '<div id="btn_accept" class="img-accept"></div>' +
@@ -86,13 +93,37 @@ var Util = {
                     '</div>' +
                 '</div>' +
             '</div>'
-        }
+        },
+
+        makeFormNewNote: function() {
+            return '<div class="form-new-note">' +
+            Util.View.makeForm() +
+            '<div id="buttons_confirm_edit" class="container-button">' +
+                '<div class="center">' +
+                    '<div id="btn_accept" class="img-accept"></div>' +                    
+                '</div>' +
+            '</div>' +
+            '</div>';
+        },
+
+        makeModalBox: function(tittle, body) {
+            return '<div id="myModal" class="modal">' +            
+              '<!-- Modal content -->' +
+              '<div class="modal-content">' +
+                '<div class="modal-tittle">' +
+                    '<h2>' + tittle + '</h2>' +
+                    '<span class="close">&times;</span>' +
+                '</div>' +
+                '<div class="modal-body">' + body + '</div>' +                                                  
+              '</div>' +            
+            '</div>';
+        },
     },
     // Object Events ------------------------------------------------------------------
     Events: {   
         onClickNewNote: function() {
             $('#btn_new_note').click(function() {
-                alert('onClick');
+                Util.Events.displayModal();                
             });
         },
 
@@ -140,6 +171,14 @@ var Util = {
                     console.log("ERROR: "+ errorThrow);                              
                 });
             });
+        },
+
+        displayModal: function() {
+            $('#myModal').css('display', 'block') // Set display block
+            .find('.close').click(function() { // When onClick close button
+                $('#myModal').css('display', 'none');
+                $(this).off("click"); // Remove onClick event 
+            });
         }
     },
     // Object AjaxOject ---------------------------------------------------------------
@@ -172,6 +211,10 @@ var Util = {
     // Object Util's functions ------------------------------------------------------
     start: function() {        
         Util.Events.onClickNewNote();
+        $('body').append(Util.View.makeModalBox(
+            'Titulo modal',
+            Util.View.makeFormNewNote()            
+        ));
         //testing ................
         //this.AjaxOject.request({test: 'msg enviado desde el cliente'}, 'json');         
         Util.AjaxOject.request({updateList: 'msg enviado desde el cliente'}, 'json')
@@ -180,7 +223,7 @@ var Util = {
         })
         .fail(function(jqXHR, textStatus, errorThrow) {
             console.log("ERROR: "+ errorThrow + ' - ' +textStatus);                              
-        });;                   
+        });         
     },
 
     /**
@@ -193,9 +236,11 @@ var Util = {
         Util.View.updatePanelNoteList(Util.NoteListArray);
         Util.Events.onClickCardNote();
         Util.View.disabled('#buttons-options-details');
+        $('.form-details').remove(); // Remove child element
         $('.panel-work-note-details').append(Util.View.makeFormdetails());                  
         Util.View.disabled('.form-details');  
         Util.Events.onClickEditNote();
+        $('#info-notes').text(Util.getInfoNotes());
     },
 
     /**
@@ -210,6 +255,16 @@ var Util = {
         }
         
         return false
+    },
+
+    getInfoNotes: function() {
+        var arrayAux = Util.NoteListArray;
+        var countDone = 0; // counter done notes
+        for (var key in arrayAux) {
+            if(arrayAux[key]['is_done']) { countDone++;}
+        }
+
+        return 'Done notes '+ countDone + '/' + Util.NoteListArray.length;
     },
 
     getDateFormat: function(date) {

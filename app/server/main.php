@@ -48,11 +48,11 @@
     
     if(isset($_POST['update_is_done'])) {
         header('Content-type: application/json; charset=utf-8');
-        $id = intval($_POST['update_is_done']['id']);
-        $isDone = ($_POST['update_is_done']['isDone'] === 'true');
+        $id = intval($_POST['update_is_done']['id']); // string to int
+        $isDone = ($_POST['update_is_done']['isDone'] === 'true'); //string to boolean
         
         $carNoteTable = new CardNoteTable();
-        $carNoteTable->updateIsDone($id, $isDone);
+        $carNoteTable->updateIsDone($id, $isDone); 
         echo json_encode($carNoteTable->getAll());
         //echo "id: $id - isDone: $isDone";
         exit();
