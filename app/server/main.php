@@ -44,7 +44,20 @@
         $carNoteTable = new CardNoteTable();
         echo json_encode($carNoteTable->getAll());
         exit();
-    } 
+    }
+    
+    if(isset($_POST['saveNewNote'])) {
+        header('Content-type: application/json; charset=utf-8');
+        $carNoteTable = new CardNoteTable();
+        $carNoteTable->insertCardNote(
+            $_POST['saveNewNote']['tittle'], 
+            $_POST['saveNewNote']['details'], 
+            $_POST['saveNewNote']['date_begin'], 
+            $_POST['saveNewNote']['date_end']
+            );
+        echo json_encode($carNoteTable->getAll());
+        exit();
+    }
     
     if(isset($_POST['update_is_done'])) {
         header('Content-type: application/json; charset=utf-8');

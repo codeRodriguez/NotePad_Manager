@@ -8,14 +8,14 @@ var Util = {
          * @param {string} element
          */
         disabled: function(element) {
-            $(element).css("display", "none");
+            return $(element).css("display", "none");
         },
 
         /**
          * @param {string} element
          */
         enable: function(element) {
-            $(element).css("display", "block");
+            return $(element).css("display", "block");
         },
 
         /**
@@ -64,7 +64,7 @@ var Util = {
             '<div class="content">' +
             '<h3 class="tittle">'+note['tittle']+'</h3>' +
             '<p class="detail">'+note['details']+'</p>' +
-            '<p class="date">'+Util.getDateFormat(note['date_begin'])+'</p>' +
+            '<p class="date">'+Util.getDateLocalFormat(note['date_begin'])+'</p>' +
             '</div>' +
             '</div>';
         },
@@ -88,7 +88,7 @@ var Util = {
                 
                 '<div id="buttons_confirm_edit" class="container-button">' +
                     '<div class="center">' +
-                        '<div id="btn_accept" class="img-accept"></div>' +
+                        '<div id="btn_accept_update_note" class="img-accept"></div>' +
                         '<div id="btn_cancel" class="img-cancel"></div>' +
                     '</div>' +
                 '</div>' +
@@ -100,29 +100,67 @@ var Util = {
             Util.View.makeForm() +
             '<div id="buttons_confirm_edit" class="container-button">' +
                 '<div class="center">' +
-                    '<div id="btn_accept" class="img-accept"></div>' +                    
+                    '<div id="btn_accept_new_note" class="img-accept"></div>' +                    
                 '</div>' +
             '</div>' +
             '</div>';
         },
 
-        makeModalBox: function(tittle, body) {
+        makeModalBox: function() {
             return '<div id="myModal" class="modal">' +            
               '<!-- Modal content -->' +
               '<div class="modal-content">' +
                 '<div class="modal-tittle">' +
-                    '<h2>' + tittle + '</h2>' +
+                    '<h2></h2>' +
                     '<span class="close">&times;</span>' +
                 '</div>' +
-                '<div class="modal-body">' + body + '</div>' +                                                  
+                '<div class="modal-body"></div>' +                                                  
               '</div>' +            
             '</div>';
         },
+        /**
+         * @param {string} tittle 
+         */
+        setModalTitle: function(tittle) {
+            tittle = (tittle == undefined) ? '' : tittle;
+            $('.modal-tittle h2').text(tittle);
+        },
+        /**
+         * @param {string} content
+         */
+        setModalContent: function(content) {
+            content = (content == undefined) ? '' : content;
+            $('.modal-body').empty().append(content);
+        },
+
+        /**
+         * @param {string} parentNode
+         * @returns {object} return id: values from all input and textarea inside a node
+         */
+        getInputValues: function(parentNode) {
+            var valuesById = {};
+            // get all input
+            $(parentNode).find('input').each(function() {                                
+                valuesById[$(this).attr('id')] = $(this).val();
+                
+            });
+
+            // get all textarea
+            $(parentNode).find('textarea').each(function() {                
+                valuesById[$(this).attr('id')] = $(this).val();
+            });
+
+            return valuesById;
+        }
     },
     // Object Events ------------------------------------------------------------------
     Events: {   
         onClickNewNote: function() {
             $('#btn_new_note').click(function() {
+                Util.View.setModalTitle('New work note'); // Set tittle
+                Util.View.setModalContent(Util.View.makeFormNewNote()); 
+                $('.form-new-note').find('#date_begin').val(Util.getDate());  // Set current date 
+                Util.Events.onClickSaveNewNote();           
                 Util.Events.displayModal();                
             });
         },
@@ -173,10 +211,28 @@ var Util = {
             });
         },
 
+        onClickSaveNewNote: function() {
+            $('#btn_accept_new_note').click(function() {                
+                
+                Util.AjaxOject.request(
+                    {'saveNewNote' : Util.View.getInputValues('.form-new-note')}, 'json'
+                ).done(function(data, textStatus, jqXHR) { 
+                    Util.View.disabled('#myModal');
+                    $(this).off('click');                   
+                    Util.update(data);                   
+
+                })
+                .fail(function(jqXHR, textStatus, errorThrow) {
+                    console.log("ERROR: "+ errorThrow);
+                });
+                
+            });
+        },
+
         displayModal: function() {
-            $('#myModal').css('display', 'block') // Set display block
+            Util.View.enable('#myModal') // Set display block
             .find('.close').click(function() { // When onClick close button
-                $('#myModal').css('display', 'none');
+                Util.View.disabled('#myModal');
                 $(this).off("click"); // Remove onClick event 
             });
         }
@@ -211,10 +267,7 @@ var Util = {
     // Object Util's functions ------------------------------------------------------
     start: function() {        
         Util.Events.onClickNewNote();
-        $('body').append(Util.View.makeModalBox(
-            'Titulo modal',
-            Util.View.makeFormNewNote()            
-        ));
+        $('body').append(Util.View.makeModalBox());
         //testing ................
         //this.AjaxOject.request({test: 'msg enviado desde el cliente'}, 'json');         
         Util.AjaxOject.request({updateList: 'msg enviado desde el cliente'}, 'json')
@@ -267,7 +320,14 @@ var Util = {
         return 'Done notes '+ countDone + '/' + Util.NoteListArray.length;
     },
 
-    getDateFormat: function(date) {
+    getDate: function(date) { // TO DO
+        var d = (date instanceof Date) ? date : new Date();    
+        var day = (d.getDate().toString().length == 1) ? "0" + d.getDate() : d.getDate();
+        var month = ((d.getMonth()+1).toString.length == 1) ? "0" + (d.getMonth()+1) : (d.getMonth()+1);  
+        return d.getFullYear() + '-' + month + '-' + day;
+    },
+
+    getDateLocalFormat: function(date) { // TO DO
         var d = new Date(date);
         return d.getDate()+'-'+(d.getMonth()+1)+'-'+d.getFullYear();
     }
