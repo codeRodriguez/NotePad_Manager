@@ -104,8 +104,32 @@ class CardNoteTable extends \ConnectionDB
             
             $this->close(); // close connection DB
             return true;
+            
         } catch (PDOException $e) {
             echo "ERROR updateNoteCard() - ".$e->getMessage();
+            return false;
+        }
+    }
+    
+    /**
+     * 
+     * @param integer $id
+     * @return boolean 
+     */
+    public function deleteById($id) {
+        try {
+            $this->connectDB();
+            $sql = "DELETE FROM card_notes WHERE id = :id";
+            
+            $statement = $this->conn->prepare($sql);
+            $statement->bindParam(':id', $id);
+            $statement->execute();
+            
+            $this->close();
+            return true;
+            
+        } catch (PDOException $e) {
+            echo "ERROR deleteById() - ".$e->getMessage();
             return false;
         }
     }

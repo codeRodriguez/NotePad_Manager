@@ -23,13 +23,18 @@
                     <h3>New Note</h3>
                     <div id="btn_new_note" class="img-add float-right"></div>
                 </div> 
-                <div class="panel-work-list-note"></div>                 
+                <div class="panel-work-list-note"></div>                    
+                <!-- added note card here -->
+                <div id="alert">
+                    <span class="closebtn">&times;</span>
+                    <span id="alert-text"></span>
+                </div>                
             </div>
             <div class="col-4 panel-work-note-details">
                 <div class="panel-tools-details">
                     <h3>Details</h3>
                     <div id="buttons-options-details" class="float-right">
-                        <div id="btn_delete" class="img-delete float-right"></div>
+                        <div id="btn_delete_note" class="img-delete float-right"></div>
                         <div id="btn_edit" class="img-edit float-right"></div>
                     </div>                     
                 </div>
@@ -43,6 +48,8 @@
     <footer>        
         <p>Home Work Manager</p>
     </footer>
+
+    
 
     <script>
         $('document').ready(function(){

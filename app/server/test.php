@@ -13,5 +13,6 @@ $t = new CardNoteTable();
 //$t->updateIsDone(12, false);
 //$t->updateNoteCard(11, 'Titulo 11', 'Detalles 11', '2017-9-12', '2017-9-12');
 
+//$t->deleteById(21);
 
 //echo json_encode($t->getAll());

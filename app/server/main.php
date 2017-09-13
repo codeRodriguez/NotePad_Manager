@@ -70,3 +70,13 @@
         //echo "id: $id - isDone: $isDone";
         exit();
     }
+    
+    if(isset($_POST['deleteById'])) {
+        header('Content-type: application/json; charset=utf-8');
+        
+        $carNoteTable = new CardNoteTable();
+        $carNoteTable->deleteById($_POST['deleteById']);
+        echo json_encode($carNoteTable->getAll());
+        
+        exit();
+    }

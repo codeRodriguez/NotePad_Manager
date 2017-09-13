@@ -8,14 +8,14 @@ var Util = {
          * @param {string} element
          */
         disabled: function(element) {
-            return $(element).css("display", "none");
+            return $(element).css("display", "none");            
         },
 
         /**
          * @param {string} element
          */
         enable: function(element) {
-            return $(element).css("display", "block");
+            return $(element).css("display", "block");            
         },
 
         /**
@@ -84,6 +84,7 @@ var Util = {
 
         makeFormdetails: function() {
             return '<div class="form-details">' +
+                '<input type="hidden" id="id" value="">' +
                 Util.View.makeForm() +
                 
                 '<div id="buttons_confirm_edit" class="container-button">' +
@@ -134,6 +135,24 @@ var Util = {
         },
 
         /**
+         * @param {string} text
+         * @param {string} classNameAlert
+         */
+        boxAlert: function(text, classNameAlert) {
+            var alertNode = '#alert';
+            var textNodeId = '#alert-text';
+
+            // Remove current classes and add new class
+            Util.View.enable(alertNode).removeClass(function() {               
+                return $(this).attr('class');
+            }).addClass(classNameAlert) 
+            .find(textNodeId).text(text);
+            $(alertNode).find('.closebtn').click(function() {
+                Util.View.disabled(alertNode).removeClass(classNameAlert);
+            });            
+        },
+
+        /**
          * @param {string} parentNode
          * @returns {object} return id: values from all input and textarea inside a node
          */
@@ -165,6 +184,29 @@ var Util = {
             });
         },
 
+        onClickDeleteNote: function() {
+            return $('#btn_delete_note').off().click(function() {
+                // Display a confirmation box, and saved in 'answer' what the user clicked
+                var answer = confirm('Are you sure to delete it?');
+
+                if(answer){
+                    var id = $('.form-details').find('#id').val();
+                    Util.AjaxOject.request({deleteById: id}, 'json')
+                    .done(function(data, textStatus, jqXHR) {
+                        Util.update(data);
+                        Util.View.boxAlert('Delete note!', 'alert-success');
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrow) {
+                        // TODO
+                    });
+                    
+                } else {
+                    Util.View.boxAlert('Caceled!', 'alert-info');
+                }
+                
+            });
+        },
+
         onClickEditNote: function() {
             $('#btn_edit').click(function() {                
                 Util.View.enable('#buttons_confirm_edit');
@@ -176,7 +218,9 @@ var Util = {
             $('#btn_cancel').click(function() {
                 Util.View.disabled('#buttons-options-details');
                 Util.View.disabled('.form-details'); 
-            })
+                // To test alert
+                Util.View.boxAlert('Edit canceled!', 'alert-info');
+            });
         },
 
         onClickCardNote: function() {
@@ -184,6 +228,7 @@ var Util = {
                 //alert('tittle:'+ Util.getNoteById($(this).attr('id'))['tittle']);                
                 var note = Util.getNoteById($(this).closest('.card-note').attr('id'));
                 Util.View.updatePanelNoteDetails(note);
+                Util.Events.onClickDeleteNote();
 
                 Util.View.enable('#buttons-options-details');
                 Util.View.enable('.form-details');
@@ -191,7 +236,7 @@ var Util = {
             }); 
         },
 
-        onClickCheckIsDone: function() { // .......................... TO DO
+        onClickCheckIsDone: function() {
             $('.card-note').find('input').click(function() {
                 // get element ID from class '.card-note'
                 var cardNoteID = $(this).closest('.card-note').attr('id');                
@@ -216,16 +261,19 @@ var Util = {
                 
                 Util.AjaxOject.request(
                     {'saveNewNote' : Util.View.getInputValues('.form-new-note')}, 'json'
-                ).done(function(data, textStatus, jqXHR) { 
-                    Util.View.disabled('#myModal');
+                ).done(function(data, textStatus, jqXHR) {                     
                     $(this).off('click');                   
                     Util.update(data);                   
 
+                    // alert success
+                    Util.View.boxAlert('saved successful!', 'alert-success');
                 })
                 .fail(function(jqXHR, textStatus, errorThrow) {
                     console.log("ERROR: "+ errorThrow);
+                    Util.View.boxAlert('Error! '+errorThrow, 'alert-danger');
                 });
                 
+                Util.View.disabled('#myModal');
             });
         },
 
