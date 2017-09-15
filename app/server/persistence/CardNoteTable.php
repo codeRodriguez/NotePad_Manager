@@ -135,6 +135,23 @@ class CardNoteTable extends \ConnectionDB
     }
     
     /**
+     * Delete all note where is done
+     * @return boolean
+     */
+    public function deleteAllDone() {
+        try {
+            $this->connectDB();
+            $sql = "DELETE FROM card_notes WHERE is_done = 1";
+            $this->conn->exec($sql);
+            
+            $this->close();
+        } catch (PDOException $e) {
+            echo "ERROR deleteAllDone() - ".$e->getMessage();
+            return false;
+        }
+    }
+    
+    /**
      * 
      * @return array|boolean 
      */

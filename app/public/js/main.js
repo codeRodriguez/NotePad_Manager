@@ -207,6 +207,26 @@ var Util = {
             });
         },
 
+        onClickDeleteAllDone: function() {
+            $('#btn_delete_all_done').click(function() {
+                var answer = confirm('Are you sure you want to clean the list?');
+
+                if(answer) {
+                    Util.AjaxOject.request('deleteAllDone', 'json')
+                    .done(function(data, textStatus, jqXHR) {
+                        Util.update(data);
+                        Util.View.boxAlert('Clean notes done!', 'alert-success');
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrow) {
+                        // TODO
+                    });
+
+                } else {
+                    Util.View.boxAlert('Caceled!', 'alert-info');
+                }
+            });
+        },
+
         onClickEditNote: function() {
             $('#btn_edit').click(function() {                
                 Util.View.enable('#buttons_confirm_edit');
@@ -315,6 +335,7 @@ var Util = {
     // Object Util's functions ------------------------------------------------------
     start: function() {        
         Util.Events.onClickNewNote();
+        Util.Events.onClickDeleteAllDone();
         $('body').append(Util.View.makeModalBox());
         //testing ................
         //this.AjaxOject.request({test: 'msg enviado desde el cliente'}, 'json');         

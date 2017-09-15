@@ -80,3 +80,12 @@
         
         exit();
     }
+    
+    if(isset($_POST['deleteAllDone'])) {
+        header('Content-type: application/json; charset=utf-8');
+        $carNoteTable = new CardNoteTable();
+        $carNoteTable->deleteAllDone();
+        echo json_encode($carNoteTable->getAll());
+        
+        exit();
+    }
